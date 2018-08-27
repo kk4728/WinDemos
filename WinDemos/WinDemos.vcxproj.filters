@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="version">
+      <UniqueIdentifier>{a8db5256-4a01-4069-ac29-af52d9a3daf7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -94,6 +97,9 @@
     </None>
     <None Include="res\Toolbar256.bmp">
       <Filter>资源文件</Filter>
+    </None>
+    <None Include="version\plan.txt">
+      <Filter>version</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

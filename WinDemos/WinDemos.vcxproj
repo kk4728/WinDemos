@@ -116,6 +116,7 @@
     <None Include="res\WinDemos.rc2" />
     <None Include="res\WinDemosDoc.ico" />
     <None Include="UserImages.bmp" />
+    <None Include="version\plan.txt" />
     <None Include="WinDemos.reg" />
   </ItemGroup>
   <ItemGroup>
@@ -158,4 +159,9 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
   </PropertyGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="WinDemos.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

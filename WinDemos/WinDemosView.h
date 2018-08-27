@@ -5,7 +5,15 @@
 #pragma once
 
 
-class CWinDemosView : public CView
+/*
+1.新建对话框 IDD_DIALOG1，属性更改 Style 为“Child”，Border 为“None”
+2.把所有可见的 CView 改为 CFormView
+3.更改你的View类的构造函数：
+	CYourView :: CYourView : CFormView( IDD_DIALOG1 )
+	{
+	}
+*/
+class CWinDemosView : public CFormView
 {
 protected: // 仅从序列化创建
 	CWinDemosView();

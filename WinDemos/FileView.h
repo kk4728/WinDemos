@@ -31,10 +31,14 @@ protected:
 
 protected:
 	void FillFileView();
+	//virtual BOOL IsResizable() const { return FALSE; }
 
 // й╣ож
 public:
 	virtual ~CFileView();
+
+	BOOL CanBeClosed()const {return FALSE; }
+	
 
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

@@ -15,9 +15,9 @@
 
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWndEx)
 
-const int  iMaxUserToolbars = 10;
+const int  iMaxUserToolbars		= 10;
 const UINT uiFirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
-const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
+const UINT uiLastUserToolBarId	= uiFirstUserToolBarId + iMaxUserToolbars - 1;
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_WM_CREATE()
@@ -106,7 +106,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// 启用 Visual Studio 2005 样式停靠窗口行为
 	CDockingManager::SetDockingMode(DT_SMART);
 	// 启用 Visual Studio 2005 样式停靠窗口自动隐藏行为
-	EnableAutoHidePanes(CBRS_ALIGN_ANY);
+	EnableAutoHidePanes(CBRS_ALIGN_ANY); //使能自动异常功能
 
 	// 加载菜单项图像(不在任何标准工具栏上):
 	CMFCToolBar::AddToolBarForImageCollection(IDR_MENU_IMAGES, theApp.m_bHiColorIcons ? IDB_MENU_IMAGES_24 : 0);
@@ -118,11 +118,14 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 
-	m_wndFileView.EnableDocking(CBRS_ALIGN_ANY);
-	m_wndClassView.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndFileView.EnableDocking(CBRS_ALIGN_LEFT);
+	m_wndClassView.EnableDocking(CBRS_ALIGN_LEFT);
+	
 	DockPane(&m_wndFileView);
 	CDockablePane* pTabbedBar = NULL;
-	m_wndClassView.AttachToTabWnd(&m_wndFileView, DM_SHOW, TRUE, &pTabbedBar);
+	//将试图以TAB的方式显示
+	m_wndClassView.AttachToTabWnd(&m_wndFileView, DM_STANDARD, TRUE, &pTabbedBar);
+
 	m_wndOutput.EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndOutput);
 	m_wndProperties.EnableDocking(CBRS_ALIGN_ANY);
@@ -201,7 +204,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 BOOL CMainFrame::CreateDockingWindows()
 {
 	BOOL bNameValid;
-
+	 
 	// 创建类视图
 	CString strClassView;
 	bNameValid = strClassView.LoadString(IDS_CLASS_VIEW);
@@ -216,7 +219,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	CString strFileView;
 	bNameValid = strFileView.LoadString(IDS_FILE_VIEW);
 	ASSERT(bNameValid);
-	if (!m_wndFileView.Create(strFileView, this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_FILEVIEW, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI))
+	if (!m_wndFileView.Create(strFileView, this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_FILEVIEW, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI, AFX_CBRS_REGULAR_TABS|AFX_CBRS_AUTOHIDE))
 	{
 		TRACE0("未能创建“文件视图”窗口\n");
 		return FALSE; // 未能创建
@@ -241,6 +244,8 @@ BOOL CMainFrame::CreateDockingWindows()
 		TRACE0("未能创建“属性”窗口\n");
 		return FALSE; // 未能创建
 	}
+
+	this->GetDockingManager()->DisableRestoreDockState(TRUE);//关闭自动保存界面到注册表
 
 	SetDockingWindowIcons(theApp.m_bHiColorIcons);
 	return TRUE;
@@ -414,4 +419,18 @@ void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 {
 	CFrameWndEx::OnSettingChange(uFlags, lpszSection);
 	m_wndOutput.UpdateFonts();
+}
+
+
+BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+
+	//if (!m_wndFileView.IsVisible()&&m_wndFileView->IsVisible())
+	//{
+	//	m_wndFileView.DockToWindow(e, CBRS_RIGHT);
+	//	m_wndFileView.AttachToTabWnd(e, DM_SHOW, FALSE, &m_pTabbedBar);
+	//}
+
+	return CFrameWndEx::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
 }

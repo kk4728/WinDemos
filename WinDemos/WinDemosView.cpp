@@ -19,12 +19,12 @@
 
 // CWinDemosView
 
-IMPLEMENT_DYNCREATE(CWinDemosView, CView)
+IMPLEMENT_DYNCREATE(CWinDemosView, CFormView)
 
-BEGIN_MESSAGE_MAP(CWinDemosView, CView)
+BEGIN_MESSAGE_MAP(CWinDemosView, CFormView)
 	// 标准打印命令
-	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
+	ON_COMMAND(ID_FILE_PRINT, &CFormView::OnFilePrint)
+	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CFormView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CWinDemosView::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
@@ -32,7 +32,7 @@ END_MESSAGE_MAP()
 
 // CWinDemosView 构造/析构
 
-CWinDemosView::CWinDemosView()
+CWinDemosView::CWinDemosView(): CFormView(IDD_FORM)
 {
 	// TODO: 在此处添加构造代码
 
