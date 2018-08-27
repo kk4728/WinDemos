@@ -1,0 +1,18 @@
+# ignore files.
+
+Debug/
+Release/
+
+*.suo
+
+*.tlog
+*.obj
+*.log
+*.pch
+*.res
+
+WinDemos/Debug/
+WinDemos/Debug/*.*
+
+
+
