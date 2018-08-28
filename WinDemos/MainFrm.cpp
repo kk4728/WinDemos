@@ -120,14 +120,23 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	m_wndFileView.EnableDocking(CBRS_ALIGN_LEFT);
 	m_wndClassView.EnableDocking(CBRS_ALIGN_LEFT);
-	
+
 	DockPane(&m_wndFileView);
 	CDockablePane* pTabbedBar = NULL;
 	//将试图以TAB的方式显示
-	m_wndClassView.AttachToTabWnd(&m_wndFileView, DM_STANDARD, TRUE, &pTabbedBar);
+	//tab1: m_wndFileView; tab2: m_wndClassView
+	m_wndClassView.AttachToTabWnd(&m_wndFileView, DM_SHOW, TRUE, &pTabbedBar);
+	pTabbedBar->SetControlBarStyle(AFX_CBRS_OUTLOOK_TABS); //当前View有隐藏、关闭按钮残余
+	//通过代码切换，让UI重绘
+	CWnd* pParent = m_wndClassView.GetParent();//之类 CMFCTabCtrl
+	CMFCBaseTabCtrl* pTab = (CMFCBaseTabCtrl*)pParent;
+	pTab->SetActiveTab(0);
+	pTab->SetActiveTab(1);
 
-	m_wndOutput.EnableDocking(CBRS_ALIGN_ANY);
-	DockPane(&m_wndOutput);
+
+
+	m_wndOutput.EnableDocking(CBRS_ALIGN_BOTTOM);
+	DockPane(&m_wndOutput); //没有这个的默认到左上角，(0,0)
 	m_wndProperties.EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndProperties);
 
@@ -176,6 +185,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	CMFCToolBar::SetBasicCommands(lstBasicCommands);
 
+
 	return 0;
 }
 
@@ -214,26 +224,33 @@ BOOL CMainFrame::CreateDockingWindows()
 		TRACE0("未能创建“类视图”窗口\n");
 		return FALSE; // 未能创建
 	}
+	//m_wndClassView.SetControlBarStyle(AFX_CBRS_AUTOHIDE);
 
 	// 创建文件视图
 	CString strFileView;
 	bNameValid = strFileView.LoadString(IDS_FILE_VIEW);
 	ASSERT(bNameValid);
-	if (!m_wndFileView.Create(strFileView, this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_FILEVIEW, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI, AFX_CBRS_REGULAR_TABS|AFX_CBRS_AUTOHIDE))
+	if (!m_wndFileView.Create(strFileView, this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_FILEVIEW, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI))
 	{
 		TRACE0("未能创建“文件视图”窗口\n");
 		return FALSE; // 未能创建
 	}
+	//
 
 	// 创建输出窗口
 	CString strOutputWnd;
 	bNameValid = strOutputWnd.LoadString(IDS_OUTPUT_WND);
 	ASSERT(bNameValid);
-	if (!m_wndOutput.Create(strOutputWnd, this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_OUTPUTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI))
+	if (!m_wndOutput.Create(strOutputWnd, this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_OUTPUTWND, 
+		 WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI
+		 ))
 	{
 		TRACE0("未能创建输出窗口\n");
 		return FALSE; // 未能创建
 	}
+	//AFX_CBRS_FLOAT将导致其他属性开启
+	m_wndOutput.SetControlBarStyle(AFX_CBRS_AUTOHIDE);//去除关闭按钮，同时设置可以自动隐藏，又不可以浮动
+	// m_wndOutput.SetControlBarStyle(AFX_CBRS_RESIZE);
 
 	// 创建属性窗口
 	CString strPropertiesWnd;
@@ -248,6 +265,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	this->GetDockingManager()->DisableRestoreDockState(TRUE);//关闭自动保存界面到注册表
 
 	SetDockingWindowIcons(theApp.m_bHiColorIcons);
+
 	return TRUE;
 }
 
@@ -426,11 +444,14 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 {
 	// TODO: 在此添加专用代码和/或调用基类
 
-	//if (!m_wndFileView.IsVisible()&&m_wndFileView->IsVisible())
-	//{
-	//	m_wndFileView.DockToWindow(e, CBRS_RIGHT);
-	//	m_wndFileView.AttachToTabWnd(e, DM_SHOW, FALSE, &m_pTabbedBar);
-	//}
+	CDockablePane* m_pTabbedBar = NULL;
+	if (m_wndFileView.GetSafeHwnd() && !m_wndFileView.IsVisible()&&m_wndFileView.IsVisible())
+	{
+		//m_wndFileView.DockToWindow(&m_wndClassView, CBRS_ALIGN_LEFT);
+		//m_wndFileView.AttachToTabWnd(&m_wndClassView, DM_SHOW, FALSE, &m_pTabbedBar);
+	}
+
+
 
 	return CFrameWndEx::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
 }
