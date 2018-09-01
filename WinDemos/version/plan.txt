@@ -10,3 +10,4 @@
 		禁止关闭
 		禁止隐藏
 		去掉右击菜单
+		SetControlBarStyle(AFX_CBRS_AUTOHIDE);//去除关闭按钮，同时设置可以自动隐藏，又不可以浮动
